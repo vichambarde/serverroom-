@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}View Item - User - Inventory Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="mb-3">
+            <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-box-seam"></i> Item Details</h4>
+            </div>
+            <div class="card-body">
+                <h3>{{ item.name }}</h3>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <p><strong>Description:</strong></p>
+                        <p>{{ item.description or 'No description available' }}</p>
+                        
+                        <p class="mt-3">
+                            <strong>Available Quantity:</strong> 
+                            <span class="badge bg-success fs-5">{{ item.quantity }}</span>
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 text-center">
+                        {% if item.qr_code_path %}
+                        <p><strong>QR Code:</strong></p>
+                        <img src="{{ url_for('static', filename=item.qr_code_path.replace('static/', '')) }}" 
+                             alt="QR Code" 
+                             class="qr-code border p-2">
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if item.quantity > 0 %}
+                <div class="mt-4">
+                    <a href="{{ url_for('user.take_item', item_id=item.id) }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-arrow-down-circle"></i> Take This Item
+                    </a>
+                </div>
+                {% else %}
+                <div class="alert alert-warning mt-4">
+                    <i class="bi bi-exclamation-triangle"></i> This item is currently out of stock.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
