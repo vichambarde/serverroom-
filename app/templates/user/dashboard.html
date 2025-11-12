@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard - Inventory Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-white mb-4"><i class="bi bi-person-circle"></i> User Dashboard</h1>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('user.scan') }}" class="btn btn-lg btn-primary">
+                    <i class="bi bi-qr-code-scan"></i> Scan QR Code
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Available Items -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-box-seam"></i> Available Items</h5>
+            </div>
+            <div class="card-body">
+                {% if items %}
+                    <div class="row">
+                        {% for item in items %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.name }}</h5>
+                                    <p class="card-text text-muted">
+                                        {{ item.description[:80] + '...' if item.description and item.description|length > 80 else item.description or 'No description' }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Available:</strong> 
+                                        <span class="badge bg-success">{{ item.quantity }}</span>
+                                    </p>
+                                    {% if item.qr_code_path %}
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#qrModal{{ item.id }}" class="btn btn-sm btn-outline-primary mb-2">
+                                        <i class="bi bi-qr-code"></i> View QR
+                                    </a>
+                                    
+                                    <!-- QR Code Modal -->
+                                    <div class="modal fade" id="qrModal{{ item.id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">QR Code: {{ item.name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img src="{{ url_for('static', filename=item.qr_code_path.replace('static/', '')) }}" 
+                                                         alt="QR Code for {{ item.name }}" 
+                                                         class="img-fluid">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <a href="{{ url_for('user.take_item', item_id=item.id) }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-arrow-down-circle"></i> Take Item
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                        <p class="text-muted mt-3">No items available at the moment.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

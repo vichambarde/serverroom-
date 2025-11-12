@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Take Item - User - Inventory Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="mb-3">
+            <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-arrow-down-circle"></i> Take Item</h4>
+            </div>
+            <div class="card-body">
+                <!-- Item Info -->
+                <div class="alert alert-info">
+                    <h5>{{ item.name }}</h5>
+                    <p class="mb-2">{{ item.description or 'No description available' }}</p>
+                    <p class="mb-0">
+                        <strong>Available Quantity:</strong> 
+                        <span class="badge bg-success">{{ item.quantity }}</span>
+                    </p>
+                </div>
+                
+                {% if item.quantity > 0 %}
+                <form method="POST" action="{{ url_for('user.take_item', item_id=item.id) }}">
+                    <div class="mb-3">
+                        <label for="user_name" class="form-label">Your Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="user_name" name="user_name" required autofocus>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="user_email" class="form-label">Your Email (Optional)</label>
+                        <input type="email" class="form-control" id="user_email" name="user_email">
+                        <small class="text-muted">Provide your email to receive confirmation</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ item.quantity }}" required>
+                        <small class="text-muted">Maximum: {{ item.quantity }}</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="purpose" class="form-label">Purpose</label>
+                        <textarea class="form-control" id="purpose" name="purpose" rows="3" placeholder="Why do you need this item?"></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Confirm and Take
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> This item is currently out of stock.
+                </div>
+                <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">
+                    Back to Dashboard
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
