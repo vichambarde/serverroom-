@@ -82,7 +82,10 @@ def generate_qr_code(item_id, item_name):
         img = qr.make_image(fill_color="black", back_color="white")
         
         # Save to static folder
-        qr_filename = f"item_{item_id}_{item_name.replace(' ', '_')}.png"
+        # Sanitize item_name to prevent path traversal attacks
+        safe_item_name = "".join(c if c.isalnum() or c in (' ', '-', '_') else '_' for c in item_name)
+        safe_item_name = safe_item_name.replace(' ', '_')
+        qr_filename = f"item_{item_id}_{safe_item_name}.png"
         qr_path = os.path.join('app', 'static', 'qr_codes', qr_filename)
         
         # Ensure directory exists
