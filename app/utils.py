@@ -86,10 +86,12 @@ def generate_qr_code(item_id, item_name):
         safe_item_name = "".join(c if c.isalnum() or c in (' ', '-', '_') else '_' for c in item_name)
         safe_item_name = safe_item_name.replace(' ', '_')
         qr_filename = f"item_{item_id}_{safe_item_name}.png"
-        qr_path = os.path.join('app', 'static', 'qr_codes', qr_filename)
         
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(qr_path), exist_ok=True)
+        # Use hardcoded directory path to prevent path traversal
+        qr_dir = os.path.join('app', 'static', 'qr_codes')
+        os.makedirs(qr_dir, exist_ok=True)
+        
+        qr_path = os.path.join(qr_dir, qr_filename)
         
         img.save(qr_path)
         
